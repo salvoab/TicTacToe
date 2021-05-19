@@ -25,6 +25,7 @@ export default class App extends Lightning.Component {
     return [{ family: 'Regular', url: Utils.asset('fonts/Roboto-Regular.ttf') }]
   }
 
+  // Template root del componente
   static _template() {
     return {
       Background: {
