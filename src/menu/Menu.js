@@ -38,9 +38,28 @@ export default class Menu extends Lightning.Component {
 
   // creazione degli items
   set items(v) {
-    // this.tag('Items').children COSA E' ????
+    // this.tag('Items').children mette l'array di oggetti creato con map all'interno del componente contenitore Items (a riga 10)
     this.tag('Items').children = v.map((el, idx) => {
       return { type: Item, action: el.action, label: el.label, y: idx * 90 }
     })
+  }
+
+  // restituisce il riferimento all'array di items contenuti nel componente contenitore Items
+  get items() {
+    return this.tag('Items').children
+  }
+
+  // restituisce l'item attivo ovvero quello a cui punta l'indice this._index
+  get activeItem() {
+    return this.items[this._index]
+  }
+
+  // metodo per settare l'indice dell'item su cui si vuole spostare il Focus
+  _setIndex(idx) {
+    // since it's a one time transition we use smooth
+    this.tag('FocusIndicator').setSmooth('y', idx * 90 + 5)
+
+    // store new index
+    this._index = idx
   }
 }
