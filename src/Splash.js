@@ -27,7 +27,7 @@ export default class Splash extends Lightning.Component {
     })
 
     // start the animation
-    this._pulse.start()
+    // this._pulse.start()
   }
 
   _active() {
