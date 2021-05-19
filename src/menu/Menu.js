@@ -1,4 +1,5 @@
 import { Lightning } from '@lightningjs/sdk'
+import { Item } from './Item'
 
 export default class Menu extends Lightning.Component {
   static _template() {
@@ -33,5 +34,13 @@ export default class Menu extends Lightning.Component {
 
   _inactive() {
     this._blink.stop()
+  }
+
+  // creazione degli items
+  set items(v) {
+    // this.tag('Items').children COSA E' ????
+    this.tag('Items').children = v.map((el, idx) => {
+      return { type: Item, action: el.action, label: el.label, y: idx * 90 }
+    })
   }
 }
