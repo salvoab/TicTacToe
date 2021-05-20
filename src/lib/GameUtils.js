@@ -41,3 +41,32 @@ const getFutureWinningIndex = tiles => {
 
   return index
 }
+
+export default {
+  AI: tiles => {
+    const mostLogicalIndex = getFutureWinningIndex(tiles)
+    if (mostLogicalIndex !== -1) {
+      return mostLogicalIndex
+    } else {
+      const opt = tiles
+        .map((el, idx) => {
+          if (el === 'e') return idx
+        })
+        .filter(Boolean)
+
+      // test for tie
+      if (!opt.length) {
+        return -1
+      }
+      return opt[~~(Math.random() * opt.length)]
+    }
+  },
+  getWinner: tiles => {
+    const regex = /(x{3}|0{3})/i
+    const set = getMatchingPatterns(regex, tiles)
+    if (set) {
+      return tiles[set.join('')[0]]
+    }
+    return false
+  },
+}
