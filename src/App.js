@@ -19,6 +19,8 @@
 
 import { Lightning, Utils } from '@lightningjs/sdk'
 import Splash from './Splash.js'
+import Main from './Main.js'
+import Game from './Game.js'
 
 export default class App extends Lightning.Component {
   static getFonts() {
@@ -55,6 +57,15 @@ export default class App extends Lightning.Component {
       Splash: {
         type: Splash,
         signals: { loaded: true },
+        alpha: 0,
+      },
+      Main: {
+        type: Main,
+        alpha: 0,
+        signals: { select: 'menuSelect' },
+      },
+      Game: {
+        type: Game,
         alpha: 0,
       },
     }
@@ -100,15 +111,40 @@ export default class App extends Lightning.Component {
             smooth: { alpha: 1, y: 0 },
           })
         }
+
         $exit() {
           this.tag('Main').patch({
             smooth: { alpha: 0, y: 100 },
           })
         }
+
+        menuSelect({ item }) {
+          if (this._hasMethod(item.action)) {
+            return this[item.action]()
+          }
+        }
+
+        start() {
+          this._setState('Game')
+        }
+
         // change focus path to main
         // component which handles the remotecontrol
         _getFocused() {
           return this.tag('Main')
+        }
+      },
+      class Game extends this {
+        $enter() {
+          this.tag('Game').setSmooth('alpha', 1)
+        }
+
+        $exit() {
+          this.tag('Game').setSmooth('alpha', 0)
+        }
+
+        _getFocused() {
+          return this.tag('Game')
         }
       },
     ]
