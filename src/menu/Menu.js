@@ -1,5 +1,5 @@
 import { Lightning } from '@lightningjs/sdk'
-import { Item } from './Item'
+import Item from './Item'
 
 export default class Menu extends Lightning.Component {
   static _template() {

@@ -1,5 +1,5 @@
 import { Lightning } from '@lightningjs/sdk'
-import { Menu } from './menu/Menu'
+import Menu from './menu/Menu'
 
 export default class Main extends Lightning.Component {
   static _template() {
@@ -16,5 +16,13 @@ export default class Main extends Lightning.Component {
         ],
       },
     }
+  }
+
+  _getFocused() {
+    return this.tag('Menu')
+  }
+
+  _handleEnter() {
+    this.signal('select', { item: this.tag('Menu').activeItem })
   }
 }
