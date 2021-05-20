@@ -159,4 +159,91 @@ export default class Game extends Lightning.Component {
 
     return true
   }
+
+  // Macchina a stati del componente Game
+  static _states() {
+    return [
+        class Computer extends this {
+            $enter(){
+                const position = Utils.AI(this._tiles);
+                if(position === -1){
+                    this._setState("End.Tie");
+                    return false;
+                }
+
+                setTimeout(()=>{
+                    if(this.place(position,"0")){
+                        this._setState("");
+                    }
+                }, ~~(Math.random()*1200)+200);
+
+                this.tag("PlayerPosition").setSmooth("alpha",0);
+            }
+
+            // make sure we don't handle
+            // any keypresses when the computer is playing
+            _captureKey({keyCode){ }
+
+            $exit(){
+                this.tag("PlayerPosition").setSmooth("alpha",1);
+            }
+        },
+        class End extends this{
+            _handleEnter(){
+                this._reset();
+            }
+            $exit(){
+                this.patch({
+                    Game:{
+                        smooth:{alpha:1}
+                    },
+                    Notification: {
+                        text:{text:''},
+                        smooth:{alpha:0}
+                    }
+                });
+            }
+            static _states(){
+                return [
+                    class Winner extends this {
+                        $enter(args, {winner}){
+                            if(winner === 'X'){
+                                this._playerScore+=1;
+                            }else{
+                                this._aiScore+=1;
+                            }
+                            this.patch({
+                                Game:{
+                                    smooth:{alpha:0},
+                                    ScoreBoard:{
+                                        Player:{text:{text:`Player ${this._playerScore}`}},
+                                        Ai:{text:{text:`Computer ${this._aiScore}`}},
+                                    }
+                                },
+                                Notification: {
+                                    text:{text:`${winner==='X'?`Player`:`Computer`} wins (press enter to continue)`},
+                                    smooth:{alpha:1}
+                                }
+                            });
+                        }
+                    },
+                    class Tie extends this {
+                        $enter(){
+                            this.patch({
+                                Game: {
+                                    smooth: {alpha: 0}
+                                },
+                                Notification: {
+                                    text:{text:`Tie :( (press enter to try again)`},
+                                    smooth:{alpha:1}
+                                }
+                            });
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+  }
+  
 }
